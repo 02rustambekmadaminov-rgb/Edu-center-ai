@@ -181,7 +181,7 @@ function AuthScreen() {
     const result = mode === "signin"
       ? await supabase.auth.signInWithPassword({ email, password })
       : mode === "signup"
-        ? await supabase.auth.signUp({ email, password })
+        ? await supabase.auth.signUp({             email,             password,             options: { emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` },           })
         : await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` });
     setBusy(false);
     if (result.error) setError(result.error.message);
