@@ -1,0 +1,44 @@
+.workspace-switcher{width:100%;color:inherit;font:inherit;cursor:pointer}
+.workspace-switcher:focus-visible,.nav-item:focus-visible,.secondary-button:focus-visible,.text-button:focus-visible{outline:2px solid #7565e8;outline-offset:2px}
+.module-content{display:grid;gap:18px}
+.module-content>.welcome-row{margin-bottom:4px}
+.module-content .welcome-row h1{font-family:Manrope,sans-serif;font-size:30px;letter-spacing:-1.1px;line-height:1.2;margin:13px 0 8px;font-weight:700}
+.secondary-button{min-height:36px;border:1px solid #e5e7ed;border-radius:7px;background:white;color:#555b68;padding:0 12px;font-size:11px;font-weight:600}
+.secondary-button:disabled{opacity:.55;cursor:wait}
+.module-panel,.metric-card,.module-empty{background:#fff;border:1px solid #eceef2;border-radius:10px}
+.module-panel{padding:18px;min-width:0}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.panel-heading h2{font-family:Manrope,sans-serif;font-size:13px;margin:0 0 5px}
+.panel-heading p{font-size:10px;color:#969aa4;margin:0}
+.module-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;align-items:end}
+.module-form label,.stacked-form label,.reversal-dialog label{display:grid;gap:6px;color:#666c79;font-size:10px;font-weight:600}
+.module-form input,.module-form select,.stacked-form input,.stacked-form select,.reversal-dialog input,.table-scroll select{height:36px;width:100%;border:1px solid #e6e8ed;border-radius:7px;padding:0 9px;background:#fff;color:#343844;outline:0;font:inherit;font-size:11px}
+.module-form input:focus,.module-form select:focus,.stacked-form input:focus,.stacked-form select:focus,.reversal-dialog input:focus,.table-scroll select:focus{border-color:#8e82e9;box-shadow:0 0 0 3px #efedff}
+.module-form>.primary-button{white-space:nowrap}
+.module-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.module-columns>.module-panel:last-child:nth-child(odd){grid-column:1/-1}
+.stacked-form{display:grid;gap:11px}
+.stacked-form .primary-button{margin-top:3px}
+.table-scroll{overflow:auto;width:100%}
+.table-scroll table{border-collapse:collapse;width:100%;text-align:left;white-space:nowrap}
+.table-scroll th{color:#969aa4;font-size:9px;font-weight:600;padding:10px 11px;border-bottom:1px solid #eff0f3}
+.table-scroll td{font-size:10px;color:#555b68;padding:11px;border-bottom:1px solid #f1f2f4}
+.table-scroll tbody tr:last-child td{border-bottom:0}
+.table-scroll select{width:auto;min-width:115px;height:30px;font-size:10px}
+.empty-row,.module-empty{text-align:center;color:#969aa4!important;padding:25px!important;font-size:11px!important}
+.module-empty{padding:17px;text-align:left;color:#818694}
+.inline-success{background:#eff8f2;color:#427a58;border:1px solid #dcefe2;border-radius:8px;padding:10px 12px;font-size:11px}
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric-card{padding:16px;display:grid;gap:9px;min-width:0}
+.metric-card>span{font-size:10px;color:#777d8a}
+.metric-card strong{font-family:Manrope,sans-serif;font-size:19px;letter-spacing:-.4px;overflow-wrap:anywhere}
+.metric-card small{font-size:9px;color:#969aa4;line-height:1.5}
+.finance-metrics{margin-bottom:0}
+.text-button{border:0;background:none;color:#6856dc;padding:4px;font-size:10px;font-weight:700}
+.modal-backdrop{position:fixed;inset:0;background:#17172770;z-index:5;display:grid;place-items:center;padding:20px}
+.reversal-dialog{width:min(420px,100%);background:#fff;border-radius:12px;padding:22px;display:grid;gap:14px;box-shadow:0 20px 60px #19172c30}
+.reversal-dialog h2{font-family:Manrope,sans-serif;font-size:16px;margin:0}
+.reversal-dialog p{font-size:11px;color:#818694;margin:0}
+.reversal-dialog>div{display:flex;justify-content:flex-end;gap:9px}
+@media(max-width:1100px){.module-form{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.module-columns{grid-template-columns:1fr}.content{padding:26px 18px}.module-content .welcome-row h1{font-size:25px}.module-panel{padding:14px}.module-form{grid-template-columns:1fr}.module-form .primary-button{width:100%}.metric-grid{gap:8px}.metric-card{padding:12px}.metric-card strong{font-size:16px}.module-content>.welcome-row{align-items:flex-start;gap:12px}.module-content>.welcome-row .secondary-button{flex:none}.breadcrumb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.topbar{padding:0 18px}}

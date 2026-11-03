@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase, supabaseConfigured } from "./lib/supabase";
+import Workspace, { type WorkspaceModule } from "./Workspace";
 
 type Membership = {
   organization_id: string;
@@ -8,12 +9,12 @@ type Membership = {
   roles: { role_key: string; name_uz: string }[];
 };
 
-const navigation = [
-  { icon: "⌂", label: "Bosh sahifa", active: true },
-  { icon: "◎", label: "CRM va sotuvlar", badge: "2-bosqich" },
-  { icon: "♙", label: "O‘quvchilar", badge: "2-bosqich" },
-  { icon: "▦", label: "Akademik", badge: "3-bosqich" },
-  { icon: "◷", label: "Moliya", badge: "4-bosqich" },
+const navigation: { icon: string; label: string; module: WorkspaceModule }[] = [
+  { icon: "⌂", label: "Bosh sahifa", module: "dashboard" },
+  { icon: "◎", label: "CRM va sotuvlar", module: "crm" },
+  { icon: "♙", label: "O‘quvchilar", module: "students" },
+  { icon: "▦", label: "Akademiya", module: "academy" },
+  { icon: "◷", label: "Moliya", module: "finance" },
 ];
 
 export default function App() {
@@ -21,6 +22,8 @@ export default function App() {
   const [loading, setLoading] = useState(supabaseConfigured);
   const [memberships, setMemberships] = useState<Membership[]>([]);
   const [pageError, setPageError] = useState("");
+  const [activeOrganization, setActiveOrganization] = useState<{ id: string; name: string } | null>(null);
+  const [activeModule, setActiveModule] = useState<WorkspaceModule>("dashboard");
 
   useEffect(() => {
     if (!supabase) return;
@@ -71,18 +74,20 @@ export default function App() {
           <span>edu<span className="brand-accent">sales</span><small>EDUCATION OS</small></span>
         </a>
         <div className="workspace-label">ISH JOYI</div>
-        <div className="workspace-switcher">
+        <button className="workspace-switcher" onClick={() => { setActiveOrganization(null); setActiveModule("dashboard"); }}>
           <span className="workspace-avatar">{session.user.email?.[0]?.toUpperCase() ?? "E"}</span>
-          <span className="workspace-copy"><strong>EduSales AI</strong><small>O‘quv markazi</small></span>
+          <span className="workspace-copy"><strong>{activeOrganization?.name ?? "Ish joyini tanlang"}</strong><small>{activeOrganization ? "Boshqaruv paneli" : "O‘quv markazi"}</small></span>
           <span className="chevron">⌄</span>
-        </div>
+        </button>
         <div className="workspace-label nav-label">MENYU</div>
         <nav className="navigation" aria-label="Asosiy menyu">
           {navigation.map((item) => (
-            <div className={`nav-item${item.active ? " active" : ""}`} key={item.label}>
+            <button className={`nav-item${activeOrganization && activeModule === item.module ? " active" : ""}`} key={item.module} onClick={() => {
+              if (!activeOrganization && item.module !== "dashboard") setPageError("Modulni ochish uchun avval ish joyini tanlang.");
+              else { setPageError(""); setActiveModule(item.module); }
+            }}>
               <span className="nav-icon">{item.icon}</span><span>{item.label}</span>
-              {item.badge && <span className="nav-badge">{item.badge}</span>}
-            </div>
+            </button>
           ))}
         </nav>
         <div className="sidebar-bottom">
@@ -97,10 +102,11 @@ export default function App() {
 
       <section className="main-area">
         <header className="topbar">
-          <div className="breadcrumb">Bosh sahifa <span>/</span> Umumiy ko‘rinish</div>
+          <div className="breadcrumb">{activeOrganization?.name ?? "Bosh sahifa"} <span>/</span> {activeOrganization ? navigation.find((item) => item.module === activeModule)?.label : "Umumiy ko‘rinish"}</div>
           <div className="topbar-actions"><span className="secure-label"><span /> Xavfsiz ulanish</span><span className="icon-button" aria-label="Bildirishnomalar">♧</span><div className="topbar-avatar">{session.user.email?.[0]?.toUpperCase() ?? "E"}</div></div>
         </header>
         <div className="content">
+          {activeOrganization ? <Workspace organizationId={activeOrganization.id} organizationName={activeOrganization.name} module={activeModule} /> : <>
           <div className="welcome-row">
             <div><div className="eyebrow"><span className="eyebrow-dot" /> BOSHQARUV MARKAZI</div><h1>Xush kelibsiz<span className="heading-period">.</span></h1><p className="welcome-copy">Markazingizni boshqarish uchun ish joyingizni tanlang yoki yangisini yarating.</p></div>
             <div className="date-chip"><span>◷</span> {new Intl.DateTimeFormat("uz-UZ", { dateStyle: "long" }).format(new Date())}</div>
@@ -118,7 +124,7 @@ export default function App() {
                 <div className="org-card-top"><span className="org-logo">{organization.name.slice(0, 1).toUpperCase()}</span><span className="org-status"><i /> Faol</span></div>
                 <h3>{organization.name}</h3>
                 <p className="org-role">{role?.name_uz ?? "Xodim"} <span>·</span> {organization.slug}</p>
-                <p className="org-note">Boshqaruv modullari keyingi bosqichlarda ulanadi</p>
+                <button className="open-workspace" onClick={() => { setActiveOrganization({ id: organization.id, name: organization.name }); setActiveModule("dashboard"); setPageError(""); }}>Boshqaruvni ochish <span>→</span></button>
               </article>;
             })}
             <CreateOrganizationCard onCreated={() => {
@@ -129,7 +135,8 @@ export default function App() {
             }} onError={setPageError} />
           </div>
 
-          <div className="phase-banner"><div className="phase-icon">✳</div><div><strong>1-bosqich · Ish joyi, kirish va ruxsatlar</strong><p>Hisobingiz himoyalangan. Har bir markaz ma’lumotlari alohida saqlanadi.</p></div><span className="phase-tag">ASOS TAYYORLANMOQDA</span></div>
+          <div className="phase-banner"><div className="phase-icon">✳</div><div><strong>CRM, o‘quvchilar, akademiya va moliya</strong><p>Modullar faqat tanlangan markaz ma’lumotlarini ko‘rsatadi. Ruxsatlarni Supabase RLS tekshiradi.</p></div><span className="phase-tag">ISHGA TAYYOR</span></div>
+          </>}
           <footer className="page-footer"><span>EduSales AI <span>·</span> O‘quv markazlari uchun Education OS</span><span>Versiya 0.1.0</span></footer>
         </div>
       </section>
@@ -181,7 +188,7 @@ function AuthScreen() {
     const result = mode === "signin"
       ? await supabase.auth.signInWithPassword({ email, password })
       : mode === "signup"
-        ? await supabase.auth.signUp({             email,             password,             options: { emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` },           })
+        ? await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` } })
         : await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` });
     setBusy(false);
     if (result.error) setError(result.error.message);
